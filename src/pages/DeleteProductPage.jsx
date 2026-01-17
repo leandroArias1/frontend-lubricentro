@@ -1,47 +1,48 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { deleteProduct } from '../api/api';
+import { getProducts, deleteProduct } from '../api/api';
 
 export default function DeleteProductPage() {
-  const [form, setForm] = useState({
-    name: '',
-    category: '',
-    brand: '',
-    type: '',
-    minStock: 1
-  });
-
+  const [products, setProducts] = useState([]);
+  const [productId, setProductId] = useState('');
   const [message, setMessage] = useState(null);
   const [messageType, setMessageType] = useState(null);
+
+  useEffect(() => {
+    getProducts().then(setProducts);
+  }, []);
 
   const submit = async (e) => {
     e.preventDefault();
     setMessage(null);
 
-    const res = await createProduct(form);
-    const data = await res.json();
-
-    if (!res.ok) {
-      setMessage(data.message || 'Error al crear producto');
+    if (!productId) {
+      setMessage('Seleccioná un producto');
       setMessageType('error');
       return;
     }
 
-    setMessage('Producto creado correctamente');
+    const res = await deleteProduct(productId);
+    const data = await res.json();
+
+    if (!res.ok) {
+      setMessage(data.message || 'Error al eliminar producto');
+      setMessageType('error');
+      return;
+    }
+
+    setMessage('Producto eliminado correctamente');
     setMessageType('success');
 
-    setForm({
-      name: '',
-      category: '',
-      brand: '',
-      type: '',
-      minStock: 1
-    });
+    // refrescar lista
+    const updated = await getProducts();
+    setProducts(updated);
+    setProductId('');
   };
 
   return (
     <div className="container">
-      <h1>Crear producto</h1>
+      <h1>Eliminar producto</h1>
 
       {message && (
         <p style={{ color: messageType === 'success' ? 'green' : 'red' }}>
@@ -50,42 +51,21 @@ export default function DeleteProductPage() {
       )}
 
       <form onSubmit={submit}>
-        <input
-          placeholder="Nombre"
-          value={form.name}
-          onChange={e => setForm({ ...form, name: e.target.value })}
-        />
-
         <select
-          value={form.category}
-          onChange={e => setForm({ ...form, category: e.target.value })}
+          value={productId}
+          onChange={e => setProductId(e.target.value)}
         >
-          <option value="">Seleccionar categoría</option>
-          <option value="Aceite">Aceite</option>
-          <option value="Filtro">Filtro</option>
-          <option value="Otro">Otro</option>
+          <option value="">Seleccionar producto</option>
+          {products.map(p => (
+            <option key={p._id} value={p._id}>
+              {p.name}
+            </option>
+          ))}
         </select>
 
-        <input
-          placeholder="Marca"
-          value={form.brand}
-          onChange={e => setForm({ ...form, brand: e.target.value })}
-        />
-
-        <input
-          placeholder="Tipo"
-          value={form.type}
-          onChange={e => setForm({ ...form, type: e.target.value })}
-        />
-
-        <input
-          type="number"
-          min="0"
-          value={form.minStock}
-          onChange={e => setForm({ ...form, minStock: Number(e.target.value) })}
-        />
-
-        <button type="submit" className="primary">Crear</button>
+        <button type="submit" className="danger">
+          Eliminar producto
+        </button>
       </form>
 
       <br />

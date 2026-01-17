@@ -1,3 +1,5 @@
+/* ===== RESET / BASE ===== */
+
 * {
   box-sizing: border-box;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
@@ -9,6 +11,8 @@ body {
   color: #333;
 }
 
+/* ===== LAYOUT ===== */
+
 .container {
   max-width: 900px;
   margin: 40px auto;
@@ -18,13 +22,16 @@ body {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
 
-h1, h2 {
+h1,
+h2 {
   margin-top: 0;
 }
 
 hr {
   margin: 24px 0;
 }
+
+/* ===== BUTTONS ===== */
 
 button {
   padding: 10px 16px;
@@ -54,6 +61,8 @@ button:hover {
   opacity: 0.9;
 }
 
+/* ===== FORMS ===== */
+
 form {
   display: flex;
   flex-direction: column;
@@ -61,16 +70,20 @@ form {
   max-width: 400px;
 }
 
-input, select {
+input,
+select {
   padding: 10px;
   border-radius: 6px;
   border: 1px solid #ccc;
 }
 
-input:focus, select:focus {
+input:focus,
+select:focus {
   outline: none;
   border-color: #2563eb;
 }
+
+/* ===== MESSAGES ===== */
 
 .message {
   padding: 10px;
@@ -86,4 +99,65 @@ input:focus, select:focus {
 .message.error {
   background-color: #fee2e2;
   color: #991b1b;
+}
+
+/* ===== STOCK TABLE ===== */
+
+.table-wrapper {
+  overflow-x: auto;
+  margin-bottom: 20px;
+}
+
+.stock-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.stock-table thead {
+  background-color: #f1f5f9;
+}
+
+.stock-table th {
+  text-align: left;
+  padding: 12px;
+  font-weight: 600;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.stock-table td {
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.stock-table tr:hover {
+  background-color: #f9fafb;
+}
+
+/* ===== STOCK STATES ===== */
+
+.stock {
+  font-weight: 600;
+}
+
+.stock.ok {
+  color: #16a34a; /* verde */
+}
+
+.stock.low {
+  color: #f59e0b; /* amarillo */
+}
+
+.stock.zero {
+  color: #dc2626; /* rojo */
+}
+
+/* ===== EMPTY STATE ===== */
+
+.empty {
+  padding: 16px;
+  background-color: #f9fafb;
+  border: 1px dashed #d1d5db;
+  border-radius: 6px;
+  color: #6b7280;
 }
