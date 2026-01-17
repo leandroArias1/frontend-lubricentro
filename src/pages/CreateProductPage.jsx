@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { createProduct } from '../api/api';
 
 export default function CreateProductPage() {
   const [form, setForm] = useState({
@@ -17,12 +18,7 @@ export default function CreateProductPage() {
     e.preventDefault();
     setMessage(null);
 
-    const res = await fetch('http://localhost:3000/api/products', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form)
-    });
-
+    const res = await createProduct(form);
     const data = await res.json();
 
     if (!res.ok) {
@@ -34,7 +30,6 @@ export default function CreateProductPage() {
     setMessage('Producto creado correctamente');
     setMessageType('success');
 
-    // limpiar formulario
     setForm({
       name: '',
       category: '',
@@ -63,13 +58,13 @@ export default function CreateProductPage() {
 
         <select
           value={form.category}
-          onChange={e => setForm({ ...form, category: e.target.value })}>
+          onChange={e => setForm({ ...form, category: e.target.value })}
+        >
           <option value="">Seleccionar categoría</option>
           <option value="Aceite">Aceite</option>
           <option value="Filtro">Filtro</option>
           <option value="Otro">Otro</option>
         </select>
-
 
         <input
           placeholder="Marca"
@@ -86,7 +81,6 @@ export default function CreateProductPage() {
         <input
           type="number"
           min="0"
-          placeholder="Stock mínimo"
           value={form.minStock}
           onChange={e => setForm({ ...form, minStock: Number(e.target.value) })}
         />

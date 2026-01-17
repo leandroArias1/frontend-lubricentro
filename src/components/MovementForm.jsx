@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
-import { getProducts, CreateMovement } from '../api/api';
+import { getProducts, createMovement } from '../api/api';
+
 export default function MovementForm({ onSuccess }) {
   const [products, setProducts] = useState([]);
   const [productId, setProductId] = useState('');
   const [type, setType] = useState('entrada');
   const [quantity, setQuantity] = useState(1);
+  const [message, setMessage] = useState(null);
+  const [messageType, setMessageType] = useState(null);
 
   useEffect(() => {
     getProducts().then(setProducts);
@@ -12,48 +15,67 @@ export default function MovementForm({ onSuccess }) {
 
   const submit = async (e) => {
     e.preventDefault();
+    setMessage(null);
 
-    if (!productId) {
-      alert('Seleccioná un producto');
+    const res = await createMovement({
+      productId,
+      type,
+      quantity
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      setMessage(data.message || 'Error al registrar movimiento');
+      setMessageType('error');
       return;
     }
 
-    await CreateMovement({
-      productId,
-      type,
-      quantity: Number(quantity)
-    });
+    setMessage('Movimiento registrado correctamente');
+    setMessageType('success');
 
-    onSuccess(); // ✅ refresca stock
+    setProductId('');
     setQuantity(1);
+
+    onSuccess && onSuccess();
   };
 
   return (
-    <form onSubmit={submit}>
-      <h2>Registrar movimiento</h2>
+    <div className="container">
+      <h1>Registrar movimiento</h1>
 
-      <select value={productId} onChange={e => setProductId(e.target.value)}>
-        <option value="">Seleccionar producto</option>
-        {products.map(p => (
-          <option key={p._id} value={p._id}>
-            {p.name}
-          </option>
-        ))}
-      </select>
+      {message && (
+        <p style={{ color: messageType === 'success' ? 'green' : 'red' }}>
+          {message}
+        </p>
+      )}
 
-      <select value={type} onChange={e => setType(e.target.value)}>
-        <option value="entrada">Entrada</option>
-        <option value="salida">Salida</option>
-      </select>
+      <form onSubmit={submit}>
+        <select value={productId} onChange={e => setProductId(e.target.value)}>
+          <option value="">Seleccionar producto</option>
+          {products.map(p => (
+            <option key={p._id} value={p._id}>
+              {p.name}
+            </option>
+          ))}
+        </select>
 
-      <input
-        type="number"
-        min="1"
-        value={quantity}
-        onChange={e => setQuantity(e.target.value)}
-      />
+        <select value={type} onChange={e => setType(e.target.value)}>
+          <option value="entrada">Entrada</option>
+          <option value="salida">Salida</option>
+        </select>
 
-      <button type="submit">Guardar</button>
-    </form>
+        <input
+          type="number"
+          min="1"
+          value={quantity}
+          onChange={e => setQuantity(Number(e.target.value))}
+        />
+
+        <button type="submit" className="primary">
+          Guardar
+        </button>
+      </form>
+    </div>
   );
 }

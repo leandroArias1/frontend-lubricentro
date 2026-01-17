@@ -1,53 +1,47 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getProducts } from '../api/api';
+import { createProduct } from '../api/api';
 
-export default function DeleteProductPage() {
-  const [products, setProducts] = useState([]);
-  const [productId, setProductId] = useState('');
+export default function CreateProductPage() {
+  const [form, setForm] = useState({
+    name: '',
+    category: '',
+    brand: '',
+    type: '',
+    minStock: 1
+  });
+
   const [message, setMessage] = useState(null);
   const [messageType, setMessageType] = useState(null);
 
-  useEffect(() => {
-    getProducts().then(setProducts);
-  }, []);
-
-  const deleteProduct = async () => {
+  const submit = async (e) => {
+    e.preventDefault();
     setMessage(null);
 
-    if (!productId) {
-      setMessage('Seleccioná un producto');
-      setMessageType('error');
-      return;
-    }
-
-    const res = await fetch(
-      `http://localhost:3000/api/products/${productId}`,
-      { method: 'DELETE' }
-    );
-
+    const res = await createProduct(form);
     const data = await res.json();
 
     if (!res.ok) {
-      // ❌ Error real del backend
-      setMessage(data.message);
+      setMessage(data.message || 'Error al crear producto');
       setMessageType('error');
       return;
     }
 
-    // ✅ Éxito real
-    setMessage(data.message);
+    setMessage('Producto creado correctamente');
     setMessageType('success');
 
-    // refrescar lista
-    const updated = await getProducts();
-    setProducts(updated);
-    setProductId('');
+    setForm({
+      name: '',
+      category: '',
+      brand: '',
+      type: '',
+      minStock: 1
+    });
   };
 
   return (
     <div className="container">
-      <h1>Eliminar producto</h1>
+      <h1>Crear producto</h1>
 
       {message && (
         <p style={{ color: messageType === 'success' ? 'green' : 'red' }}>
@@ -55,18 +49,46 @@ export default function DeleteProductPage() {
         </p>
       )}
 
-      <select value={productId} onChange={e => setProductId(e.target.value)}>
-        <option value="">Seleccionar producto</option>
-        {products.map(p => (
-          <option key={p._id} value={p._id}>
-            {p.name}
-          </option>
-        ))}
-      </select>
+      <form onSubmit={submit}>
+        <input
+          placeholder="Nombre"
+          value={form.name}
+          onChange={e => setForm({ ...form, name: e.target.value })}
+        />
 
-      <button className="danger" onClick={deleteProduct}>Eliminar</button>
+        <select
+          value={form.category}
+          onChange={e => setForm({ ...form, category: e.target.value })}
+        >
+          <option value="">Seleccionar categoría</option>
+          <option value="Aceite">Aceite</option>
+          <option value="Filtro">Filtro</option>
+          <option value="Otro">Otro</option>
+        </select>
 
-      <br /><br />
+        <input
+          placeholder="Marca"
+          value={form.brand}
+          onChange={e => setForm({ ...form, brand: e.target.value })}
+        />
+
+        <input
+          placeholder="Tipo"
+          value={form.type}
+          onChange={e => setForm({ ...form, type: e.target.value })}
+        />
+
+        <input
+          type="number"
+          min="0"
+          value={form.minStock}
+          onChange={e => setForm({ ...form, minStock: Number(e.target.value) })}
+        />
+
+        <button type="submit" className="primary">Crear</button>
+      </form>
+
+      <br />
 
       <Link to="/">
         <button className="secondary">Volver</button>
