@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { createProduct } from '../api/api';
+import { deleteProduct } from '../api/api';
 
 export default function DeleteProductPage() {
   const [form, setForm] = useState({
