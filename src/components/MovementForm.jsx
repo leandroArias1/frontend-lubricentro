@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getProducts, createMovement } from '../api/api';
-
+import { getProducts, CreateMovement } from '../api/api';
 export default function MovementForm({ onSuccess }) {
   const [products, setProducts] = useState([]);
   const [productId, setProductId] = useState('');
@@ -19,7 +18,7 @@ export default function MovementForm({ onSuccess }) {
       return;
     }
 
-    await createMovement({
+    await CreateMovement({
       productId,
       type,
       quantity: Number(quantity)
