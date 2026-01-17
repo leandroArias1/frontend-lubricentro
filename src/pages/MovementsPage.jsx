@@ -9,7 +9,11 @@ export default function MovementsPage() {
     <div className="container">
       <h1>Registrar movimiento</h1>
 
-      {message && <p style={{ color: 'green' }}>{message}</p>}
+      {message && (
+        <p style={{ color: 'green' }}>
+          {message}
+        </p>
+      )}
 
       <MovementForm
         onSuccess={() => setMessage('Movimiento registrado correctamente')}

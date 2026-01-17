@@ -85,7 +85,9 @@ export default function CreateProductPage() {
           onChange={e => setForm({ ...form, minStock: Number(e.target.value) })}
         />
 
-        <button type="submit" className="primary">Crear</button>
+        <button type="submit" className="primary">
+          Crear
+        </button>
       </form>
 
       <br />
