@@ -1,33 +1,24 @@
 import { Link } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { getProducts } from '../api/api';
-import ProductTable from '../components/ProductTable';
 
 export default function StockPage() {
-  const [products, setProducts] = useState([]);
-
-  useEffect(() => {
-    getProducts().then(setProducts);
-  }, []);
-
   return (
     <div className="container">
       <h1>Stock</h1>
 
-      <ProductTable products={products} />
+      {/* acá va la tabla de productos */}
 
-      <hr />
+      <br />
 
-      <Link to="/movements">
-        <button>Registrar movimiento</button>
+      <Link to="/movement">
+        <button className="primary">Registrar movimiento</button>
       </Link>
 
-      <Link to="/products/new">
-        <button>Crear producto</button>
+      <Link to="/create-product">
+        <button className="secondary">Crear producto</button>
       </Link>
 
-      <Link to="/products/delete">
-        <button>Eliminar producto</button>
+      <Link to="/delete-product">
+        <button className="danger">Eliminar producto</button>
       </Link>
     </div>
   );

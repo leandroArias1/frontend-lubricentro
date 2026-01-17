@@ -10,9 +10,9 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<StockPage />} />
-        <Route path="/movements" element={<MovementsPage />} />
-        <Route path="/products/new" element={<CreateProductPage />} />
-        <Route path="/products/delete" element={<DeleteProductPage />} />
+        <Route path="/movement" element={<MovementsPage />} />
+        <Route path="/create-product" element={<CreateProductPage />} />
+        <Route path="/delete-product" element={<DeleteProductPage />} />
       </Routes>
     </BrowserRouter>
   );
